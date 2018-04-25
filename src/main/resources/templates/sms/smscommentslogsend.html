@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>spring boot </title>
+    <link href="" rel="stylesheet" />
+</head>
+<body>
+    <form id="ff" class="form-horizontal" method="post" action="sendnote.do">
+        <div class="form-row">
+            <div class="col" style=" width:80px; text-align:center">接收手机号:</div>
+            <div class="col" style=" width:200px;"> <input id="phone" class="form-control" name="phone" type="text"/><span class="c-red">*</span> </div>
+            <div class="col"><span id="phoneTip"></span></div>
+        </div>
+
+        <div class="form-row">
+            <div class="col" style=" width:80px; text-align:center">短信内容:</div>
+            <div class="col" style=" width:350px;"> <textarea class="form-control" rows="5" id="msg" name="msg"></textarea><span class="c-red">*</span> </div>
+            <div class="col"><span id="msgTip"></span></div>
+        </div>
+
+        <div class="form-row">
+            <div class="col" style=" width:80px; text-align:center">&nbsp;</div>
+            <div class="col" style=" width:200px;">
+                <a id="btok" style="font-size:12px" href="javascript:void(0)" class="btn btn-info" onclick="submitForm()">发送</a>
+                <a style="font-size:12px" href="javascript:void(0)" class="btn btn-default" onclick="clearForm()">取消</a> </div>
+            <div class="col"></div>
+        </div>
+
+    </form>
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}"/>
+<script type="text/javascript" th:inline="javascript">
+
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>spring boot </title>
+    <link href="" rel="stylesheet" />
+</head>
+<body>
+<div id="build-layout" class="easyui-layout" style="width:100%;margin: 0px; height: 560px;">
+    <div data-options="region:'north',split:true,title:'组合查询',iconCls:'icon-search'" style="width:100%; height: 80px;">
+        <div>
+            <form name="searchform" method="post" action="" id ="searchform">
+
+                <div class="form-row">
+                    <div class="col" style=" width:80px; text-align:center">接收手机号:</div>
+                    <div class="col" style=" width:200px;"> <input id="phone" name="phone" type="text" class="form-control"/><span class="c-red">*</span> </div>
+                    <div class="col">  <a style ="height:30px;font-size:12px" id="submit_search" href="javascript:void(0)"  class="btn btn-info" role="button"  th:onclick="'javascript:doSearch()'"><i class="mjmh-iconfont mjmh-iconfont-search1"></i> &nbsp;查询</a></div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <div data-options="region:'center'" style="border:none;margin-top:10px">
+
+        <div id="toolbar">
+
+                <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-add" th:onclick="'javascript:sendMsg()'">发送短信</a>
+
+                <a href="javascript:void(0)" class="easyui-linkbutton" plain="true" iconCls="icon-remove" th:onclick="'javascript:del()'">删除</a>
+
+        </div>
+
+        <table id="dg" >
+        </table>
+    </div>
+
+</div>
+<link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/material/easyui.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/easyui/themes/icon.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/easyui/css/material.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/css/global.css}"/>
+<script type="text/javascript" th:src="@{/easyui/jquery.min.js}"/>
+<script type="text/javascript" th:src="@{/easyui/jquery.easyui.min.js}"/>
+<script type="text/javascript" th:src="@{/easyui/locale/easyui-lang-zh_CN.js}"/>
+<script type="text/javascript" th:src="@{/layer/layer.js}"/>
+<script type="text/javascript" th:inline="javascript">
+    function doSearch(){
+        $('#dg').datagrid('load',{
+            phone: $('#phone').val()
+        });
+    }
+    function sendMsg() {
+        parent.layer.open({
+            type: 2,
+            area: [580+'px', 300+'px'],
+            fix: false, //不固定
+            shade:0.4,
+            title:'发短信',
+            content: '/sms/tosend.do',
+            success: function(layero, index){
+            }
+        });
+    }
+
+    function del(){
+        /*<![CDATA[*/
+        parent.layer.confirm("确定要删除吗？",function(){
+            var ids = [];
+            var rows = $('#dg').datagrid('getChecked');
+            for(var i=0;i < rows.length;i++){
+                ids.push(rows[i].id);
+            }
+            if(ids.length==0){
+                parent.layer.alert("请选择短信!");
+                return false;
+            }
+            var url = "/sms/delete";
+            var para = {"ids":ids};
+            console.log(para);
+            $.ajax({
+                type: "post",
+                url: url,
+                data: para,
+                dataType: "json",
+                async:false,
+                success:function(data) {
+                    //alert("删除"+data.msg);
+                    if(data.result){
+                        parent.layer.msg("已删除!",{icon:2,time:1000});
+                        location.reload();
+                    }
+                }
+            });
+        });
+        /*]]>*/
+    }
+    $('#dg').datagrid({
+        fitColumns:true,
+        width:'100%',
+        height:380,
+        collapsible:true,
+        toolbar:"#toolbar",
+        url:'/sms/datalist.do',
+        method:'post',
+        title:'短信记录',
+        iconCls:'icon-search',
+        pagination:'true',
+        rownumbers:true,
+        autoRowHeight:false,
+        pageSize:10,
+        columns:[[
+            {field:'ck',checkbox:true},
+            {field:'smsTime',width:15,title:'发送时间'},
+            {field:'phone',width:15,title:'接收手机号'},
+            {field:'msg',width:55,title:'短信内容',align:'left'}
+        ]],
+        onLoadSuccess:function(){
+
+        }
+    });
+
+
+
+</script>
+
+</body>
+</html>
